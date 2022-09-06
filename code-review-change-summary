@@ -1,0 +1,40 @@
+Code Review Comments/ Optimizations
+
+1. Player.java
+  a) Use of lombok to remove boilerplate code (getters/setters) for better code readability and maintainability
+  b) Replace default access modifier with private access modifier for its attributes name and position
+  c) default value for primitive int is 0, so no need to specify explicitly
+  d) Added new age attribute to store Player's age. Needed to check whether respective player is allowed to play or not as per Game age specs 4-7 years
+  e) Added java docs 
+
+2. BoardSquare.java
+
+  a) Use of lombok to remove boilerplate code (getters/setters) for better code readability and maintainability
+  b) Removed logic from getNumberSquaresToSkip() getter method and created a utility class to perform the same. As a best practice try to avoid writing any logic within POJO getter or setters. 
+  c) Added java docs 
+
+3. Board.java
+  a) This class defines Chutes And Ladders Game board specifications like special squares with chute and ladder locations which are static and immutable. For multithreaded env. we don't need to create this object every time for each game thread. Hence, this class can be instantiated using singleton pattern and same instance can be used by all parallel threads.
+  b) Added private static final for Map<Integer, BoardSquare> specialSquares for this constant Map and restrict it's access within the class
+  c) Added private for List<BoardSquare> squares to restrict it's access within this class
+  d) Added java docs 
+
+
+4. Game.java
+  a)  Instead of Random class generator used ThreadLocalRandom for better program efficiency with no contention in a multi-threaded environment
+  b) Removed hard coded Players[] and replaced it with List to make number of players dynamic
+  c) Refactored this class to move playGame() method into an Interface, and create its implementation class achieve abstraction
+  d) Removed creation of Board class object dependency (hard coupling), and passed it using constructor arg using Dependency Injection
+  e) Define a constant for Int 100 to avoid static code scan quality issues
+  f) Added java docs 
+
+General Comments
+  a) Refactored package structure for better code organization
+  b) Added exception handling and few custom exception classes PlayerNotAllowedException and PlayerInvalidCountException to handle negative scenarios
+  c) Instead of exception.printStackTrace() or Sys.out , used logger as a best practice
+  d) validatePlayersSize(players); method inside GameImpl can be replaced it with JSR 380 bean validation which is a declarative and cleaner approach to performing validation ** Could not get a chance to implement due to time constraint
+  
+Please note, I have added below dependencies in build.gradle for lombok feature. In order to setup Lombok to work in IDE, please refer article https://projectlombok.org/setup/eclipse
+
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    compile('org.projectlombok:lombok:1.18.4')
